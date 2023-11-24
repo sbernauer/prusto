@@ -3,25 +3,25 @@
 use prusto::Presto;
 
 #[derive(Presto)]
-struct Person  {
+struct Person {
     name: String,
     age: i32,
 }
 
 #[derive(Presto)]
-struct Group  {
+struct Group {
     name: String,
     leader: Person,
 }
 
 #[derive(Presto)]
-struct Foo  {
+struct Foo {
     name: String,
     bar: i32,
 }
 
 #[derive(Presto)]
-struct Generic<T: Presto>  {
+struct Generic<T: Presto> {
     name: String,
     t: T,
 }
@@ -29,7 +29,7 @@ struct Generic<T: Presto>  {
 fn test_simple() {
     let p = Person {
         name: "h".to_string(),
-        age: 5
+        age: 5,
     };
 
     assert_eq!(p.value(), (&"h".to_string(), &5));
@@ -40,7 +40,7 @@ fn test_nested() {
         name: "g1".to_string(),
         leader: Person {
             name: "h".to_string(),
-            age: 5
+            age: 5,
         },
     };
 
@@ -53,7 +53,7 @@ fn test_generic() {
         t: Foo {
             name: "foo".to_string(),
             bar: 10,
-        }
+        },
     };
 
     assert_eq!(g.value(), (&"gen".to_string(), (&"foo".to_string(), &10)));
@@ -65,7 +65,7 @@ fn test_wrap() {
         a: u32,
     }
 
-    let a = A {a: 1};
+    let a = A { a: 1 };
     assert_eq!(a.value(), (&1,));
 }
 
