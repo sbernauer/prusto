@@ -1,9 +1,15 @@
 use proc_macro2::*;
 use quote::*;
+use structmeta::StructMeta;
 use syn::spanned::Spanned;
 use syn::*;
 
-#[proc_macro_derive(Presto)]
+#[derive(StructMeta, Debug)]
+struct PrestoAttributes {
+    rename: LitStr,
+}
+
+#[proc_macro_derive(Presto, attributes(presto))]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let data = parse_macro_input!(input as ItemStruct);
 
@@ -26,9 +32,22 @@ fn derive_impl(data: ItemStruct) -> Result<TokenStream> {
     let tuplety = Ident::new(&format!("Tuple{}", fields.len()), Span::call_site());
 
     let keys = fields.iter().map(|f| f.ident.as_ref().unwrap());
-    let keys_lit = keys
-        .clone()
-        .map(|ident| LitStr::new(&format!("{}", ident), ident.span()));
+    let keys_lit = fields.iter().map(|field| {
+        let ident = field.ident.as_ref().unwrap();
+        let attrs = field
+            .attrs
+            .iter()
+            .filter(|attr| attr.path().is_ident("presto"))
+            .flat_map(|attr| attr.parse_args().ok())
+            .next();
+
+        let field_name = match attrs {
+            Some(PrestoAttributes { rename }) => rename.value(),
+            _ => ident.to_string(),
+        };
+
+        LitStr::new(&field_name, ident.span())
+    });
     let types = fields.iter().map(|f| &f.ty);
     let types1 = types.clone();
 
