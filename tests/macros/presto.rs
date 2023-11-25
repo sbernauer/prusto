@@ -69,9 +69,19 @@ fn test_wrap() {
     assert_eq!(a.value(), (&1,));
 }
 
+fn test_name_attribute() {
+    #[derive(Presto)]
+    #[allow(dead_code)]
+    struct Renamed {
+        #[presto(rename = "Query Plan")]
+        query_plan: String,
+    }
+}
+
 fn main() {
     test_simple();
     test_nested();
     test_generic();
     test_wrap();
+    test_name_attribute();
 }
