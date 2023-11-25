@@ -1,9 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use super::*;
 use crate::{DataSet, Presto};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct QueryResult<T: Presto> {
     pub id: String,
